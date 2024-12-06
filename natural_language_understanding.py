@@ -2,7 +2,7 @@ from transformers import pipeline, AutoModelForSequenceClassification, AutoToken
 
 
 class NaturalLanguageUnderstanding:
-    def __init__(self, local_model_path="./local_model"):
+    def __init__(self, local_model_path="./local_model/models--facebook--bart-large-mnli/snapshots/d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"):
         """
         自然语言理解模块：使用本地 Zero-shot Classification 模型
         """
