@@ -283,6 +283,9 @@ class VoiceAssistantUI:
         self.master.attributes("-transparentcolor", "white")
         self.master.configure(bg="white")  # 背景色设置为透明色
 
+        # 设置窗口始终在最上方
+        self.master.attributes("-topmost", True)
+
         # 设置窗口大小和位置
         self.master.geometry("400x300+400+400")
 
@@ -310,7 +313,7 @@ class VoiceAssistantUI:
         self.log_canvas = None
 
         # 初始化语音助手
-        self.assistant = VoiceAssistant(wake_word="august")
+        self.assistant = VoiceAssistant(wake_word="august", ui=self)
         self.assistant_thread = None
 
         # 重定向标准输出到 StringIO
@@ -448,6 +451,22 @@ class VoiceAssistantUI:
             # 每 500ms 更新一次
             self.master.after(500, self.update_log)
 
+    def update_image(self, state="initial"):
+        """
+        更新显示的图片
+        :param state: 图片状态，可以是 "initial" 或 "activated"
+        """
+        if state == "initial":
+            new_image = self.cat_image  # 默认静默状态图片
+        elif state == "activated":
+            new_image = self.cat_awake_image  # 激活模式图片
+
+        # 清空当前 Canvas 内容并更新图片
+        self.status_canvas.delete("all")
+        self.status_canvas.create_image(0, 0, anchor="nw", image=new_image)
+        self.status_canvas.image = new_image  # 防止图片被垃圾回收
+
+
     def start_drag(self, event):
         self._offset_x = event.x
         self._offset_y = event.y
@@ -481,12 +500,12 @@ class VoiceAssistantUI:
 
     def activate_mode(self):
         self.assistant.is_active = True
-        self.update_status(True)
-        self.tts.speak("Active Mode.")
+        self.update_image(state="activated")  # 更新图片为激活状态
+        self.tts.speak("Yes, I am.")
 
     def silent_mode(self):
         self.assistant.is_active = False
-        self.update_status(False)
+        self.update_image(state="initial")  # 更新图片为静默状态
         self.tts.speak("Silent Mode.")
 
     def exit_program(self):

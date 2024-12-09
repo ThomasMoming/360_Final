@@ -29,12 +29,11 @@ class NaturalLanguageUnderstanding:
 
         # 定义预设的意图标签
         candidate_labels = [
-            "turn on the light",
-            "turn off the light",
+            "Wechat",
+            "Canvas",
             "weather report",
-            "play music",
-            "set an alarm",
-            "check the current time"
+            "GoSFU",
+
         ]
 
         # 检查候选标签是否为空
