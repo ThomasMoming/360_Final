@@ -425,7 +425,7 @@ class VoiceAssistantUI:
             self.log_canvas = None  # 重置 log_canvas 为 None
         else:
             # 创建新的日志显示区域
-            self.log_canvas = Canvas(self.master, width=250, height=60, bg="black")
+            self.log_canvas = Canvas(self.master, width=250, height=50, bg="black")
             self.log_canvas.place(x=self.status_canvas.winfo_x() - 110, y=self.status_canvas.winfo_y() + 170)
 
             # 更新日志内容

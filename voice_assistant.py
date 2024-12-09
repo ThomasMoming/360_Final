@@ -62,7 +62,7 @@ class VoiceAssistant:
 
                     return
 
-                # 移除结束标志符，确保干净的输入
+                # 移除结束标志符，干净的输入
                 transcript = transcript.replace(self.silent_word, "").strip()
 
                 # 跳过空文本处理
@@ -109,10 +109,10 @@ class VoiceAssistant:
 
             # 获取城市名称
             city = location_data.get("city", "Vancouver")  # 如果无法获取城市，使用默认值
-            print(f"Detected City: {city}")  # 调试输出
+            print(f"Detected City: {city}")
 
             # 使用 Weatherstack API 获取天气
-            api_key = "03a9fbf6ffd74371c0009e1865545f30"  # 替换为你的 Weatherstack API 密钥
+            api_key = "03a9fbf6ffd74371c0009e1865545f30"
             api_url = f"http://api.weatherstack.com/current?access_key={api_key}&query={city}"
 
             # 请求天气数据
@@ -185,34 +185,31 @@ class VoiceAssistant:
             elif intent == "Canvas":
                 self.tts.speak("Confirm.")
                 try:
-                    # 指定要打开的链接
+                    #链接
                     canvas_url = "https://canvas.sfu.ca/"
-                    # 使用 webbrowser 模块在默认浏览器中打开链接
+                    # webbrowser打开链接
                     webbrowser.open(canvas_url)
                 except Exception as e:
-                    # 如果发生错误，进行语音播报并打印错误信息
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")
             elif intent == "GoSFU":
                 self.tts.speak("Confirm.")
                 try:
-                    # 指定要打开的链接
+                    #链接
                     canvas_url = "https://sims.erp.sfu.ca/psc/csprd/EMPLOYEE/SA/s/WEBLIB_SFU.ISCRIPT1.FieldFormula.IScript_CASSignin?&"
-                    # 使用 webbrowser 模块在默认浏览器中打开链接
+                    # webbrowser打开链接
                     webbrowser.open(canvas_url)
                 except Exception as e:
-                    # 如果发生错误，进行语音播报并打印错误信息
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")
             elif intent == "outlook":
                 self.tts.speak("Confirm.")
                 try:
-                    # 指定要打开的链接
+                    #链接
                     canvas_url = "https://outlook.office365.com/mail/"
-                    # 使用 webbrowser 模块在默认浏览器中打开链接
+                    # webbrowser打开链接
                     webbrowser.open(canvas_url)
                 except Exception as e:
-                    # 如果发生错误，进行语音播报并打印错误信息
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")
             else:
