@@ -8,6 +8,8 @@ import os
 import subprocess
 import webbrowser
 import requests
+from PIL import ImageGrab
+import pyautogui
 
 
 class VoiceAssistant:
@@ -182,33 +184,83 @@ class VoiceAssistant:
                 self.tts.speak("Confirm.")
                 weather_info = self.get_weather()  # 自动获取当地天气
                 self.tts.speak(weather_info)
+
+            elif intent == "Task Manager":
+                try:
+                    # 打开任务管理器
+                    subprocess.Popen("taskmgr", shell=True)
+                    self.tts.speak("Confirm.")
+                except Exception as e:
+                    # 如果发生错误，进行语音播报并打印错误信息
+                    self.tts.speak("Unable open.")
+                    print(f"Error open: {e}")
+
+            elif intent == "close web":
+                try:
+                    # 模拟快捷键 Ctrl + W 关闭当前网页标签
+                    pyautogui.hotkey("ctrl", "w")
+                    self.tts.speak("Confirm.")
+                except Exception as e:
+                    # 如果发生错误，进行语音播报并打印错误信息
+                    self.tts.speak("Unable close web.")
+                    print(f"Error close: {e}")
+
+            elif intent == "screenshot":
+                try:
+                    # 获取桌面路径
+                    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+                    # 设置截图保存路径和文件名
+                    screenshot_path = os.path.join(desktop_path, "screenshot.png")
+                    # 截取屏幕并保存
+                    screenshot = ImageGrab.grab()
+                    screenshot.save(screenshot_path, "PNG")
+                    # 提示截图已保存
+                    self.tts.speak("Confirm.")
+                except Exception as e:
+                    # 如果发生错误，进行语音播报并打印错误信息
+                    self.tts.speak("Unable Execute.")
+                    print(f"Error Execute: {e}")
+
             elif intent == "Canvas":
-                self.tts.speak("Confirm.")
                 try:
                     #链接
                     canvas_url = "https://canvas.sfu.ca/"
                     # webbrowser打开链接
                     webbrowser.open(canvas_url)
+                    self.tts.speak("Confirm.")
                 except Exception as e:
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")
+
+            elif intent == "play music":
+                try:
+                    # YouTube Music 推荐页面链接
+                    youtube_music_url = "https://music.youtube.com/"
+                    # 打开 YouTube Music 推荐页面
+                    webbrowser.open(youtube_music_url)
+                    self.tts.speak("Confirm.")
+                except Exception as e:
+                    self.tts.speak("Error open.")
+                    print(f"Error open: {e}")
+
             elif intent == "GoSFU":
-                self.tts.speak("Confirm.")
                 try:
                     #链接
                     canvas_url = "https://sims.erp.sfu.ca/psc/csprd/EMPLOYEE/SA/s/WEBLIB_SFU.ISCRIPT1.FieldFormula.IScript_CASSignin?&"
                     # webbrowser打开链接
                     webbrowser.open(canvas_url)
+                    self.tts.speak("Confirm.")
                 except Exception as e:
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")
+
             elif intent == "outlook":
-                self.tts.speak("Confirm.")
                 try:
                     #链接
                     canvas_url = "https://outlook.office365.com/mail/"
                     # webbrowser打开链接
                     webbrowser.open(canvas_url)
+                    self.tts.speak("Confirm.")
                 except Exception as e:
                     self.tts.speak("Error open.")
                     print(f"Error open: {e}")

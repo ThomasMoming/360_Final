@@ -33,6 +33,11 @@ class NaturalLanguageUnderstanding:
             "Canvas",
             "weather report",
             "GoSFU",
+            "Task Manager",
+            "screenshot",
+            "close web",
+            "play music",
+            "outlook",
 
         ]
 

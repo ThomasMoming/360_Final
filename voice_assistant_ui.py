@@ -256,7 +256,7 @@
 #             self.exit_button.grid_forget()
 
 #---------------------------------------------------------------------------------------------------------
-import sys
+import sys,os
 from tkinter import Label, Canvas, Tk, CENTER
 from tkinter.ttk import Button, Style
 from threading import Thread
@@ -264,6 +264,7 @@ from PIL import Image, ImageTk
 from voice_assistant import VoiceAssistant
 from text_to_speech import TextToSpeech
 from io import StringIO
+
 
 
 class VoiceAssistantUI:
@@ -328,7 +329,12 @@ class VoiceAssistantUI:
         :param height: 缩放后的高度
         :return: Tkinter PhotoImage 对象
         """
-        img = Image.open(path)
+        # 打包后的环境，使用 sys._MEIPASS
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        full_path = os.path.join(base_path, path)
+
+        # 加载图片
+        img = Image.open(full_path)
         img.thumbnail((width, height), Image.LANCZOS)  # 替换 ANTIALIAS 为 LANCZOS
         return ImageTk.PhotoImage(img)
 
