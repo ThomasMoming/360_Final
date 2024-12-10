@@ -2,8 +2,34 @@ from natural_language_understanding import NaturalLanguageUnderstanding
 import pyttsx3
 import os
 import subprocess
-# 测试代码
-if __name__ == "__main__":
+import sounddevice as sd
+import platform
+import os
+# import whisper
+
+
+
+# import os
+# import whisper
+#
+# model_name = "base"
+# model = whisper.load_model(model_name)
+#
+# # 打印模型的缓存路径
+# cache_dir = os.path.expanduser("~/.cache/whisper")
+# print(f"Whisper model directory: {cache_dir}")
+
+# # 测试代码
+# if __name__ == "__main__":
+#
+#
+#     # 检查模型文件路径
+#     model_path = whisper._download("base")
+#     print(f"Whisper model downloaded at: {model_path}")
+
+    # print(f"PortAudio Library Path: {sd._libname}")  # 打印动态库路径
+    # print(platform.architecture())
+
     # # 指定本地模型路径
     # local_model_path = "./local_model/models--facebook--bart-large-mnli/snapshots/d7645e127eaf1aefc7862fd59a17a5aa8558b8ce"
     # nlu = NaturalLanguageUnderstanding(local_model_path=local_model_path)
@@ -34,25 +60,25 @@ if __name__ == "__main__":
 
 
 
-    def open_discord():
-        # 检查仅文件路径是否存在
-        Discord_exe_path = r"C:\Users\15694\AppData\Local\Discord\Update.exe"
-
-        if os.path.exists(Discord_exe_path):  # 检查 Update.exe 是否存在
-            # 构造完整的启动命令
-            command = f'"{Discord_exe_path}" --processStart Discord.exe'
-            try:
-                # 尝试打开可执行文件
-                subprocess.Popen(command, shell=True)
-                print("Confirm.")  # 或者调用 TTS
-            except Exception as e:
-                print(f"Error: Unable to open Discord. {e}")
-        else:
-            # 文件未找到
-            print("Executable file not found.")  # 或者调用 TTS
-
-
-    # 调用函数测试
-    open_discord()
+    # def open_discord():
+    #     # 检查仅文件路径是否存在
+    #     Discord_exe_path = r"C:\Users\15694\AppData\Local\Discord\Update.exe"
+    #
+    #     if os.path.exists(Discord_exe_path):  # 检查 Update.exe 是否存在
+    #         # 构造完整的启动命令
+    #         command = f'"{Discord_exe_path}" --processStart Discord.exe'
+    #         try:
+    #             # 尝试打开可执行文件
+    #             subprocess.Popen(command, shell=True)
+    #             print("Confirm.")  # 或者调用 TTS
+    #         except Exception as e:
+    #             print(f"Error: Unable to open Discord. {e}")
+    #     else:
+    #         # 文件未找到
+    #         print("Executable file not found.")  # 或者调用 TTS
+    #
+    #
+    # # 调用函数测试
+    # open_discord()
 
 

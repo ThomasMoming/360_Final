@@ -1,7 +1,10 @@
 import sounddevice as sd
+print(f"PortAudio Library Path: {sd._libname}")
 import numpy as np
 import queue
-
+import os
+import sys
+import ctypes
 
 class AudioProcessor:
     def __init__(self, sample_rate=16000, block_size=1024, channels=1):
@@ -11,6 +14,18 @@ class AudioProcessor:
         :param block_size: 每次录音处理的帧数
         :param channels: 音频通道数
         """
+
+        # 如果在打包环境下运行，获取动态库路径
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+        print(f"Base Path: {base_path}")
+        lib_path = os.path.join(base_path, "libportaudio64bit.dll")
+
+        try:
+            ctypes.CDLL("libportaudio64bit.dll")
+            print("PortAudio library loaded successfully!")
+        except Exception as e:
+            print(f"Failed to load PortAudio library: {e}")
+
         self.sample_rate = sample_rate
         self.block_size = block_size
         self.channels = channels
