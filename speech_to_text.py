@@ -1,63 +1,86 @@
 import whisper
 import numpy as np
-import warnings
 import os
 import sys
+from shutil import copyfile
 from transformers import WhisperTokenizer
+
 
 class SpeechToText:
     def __init__(self, model_name="base", language="en", device="cpu"):
         """
-        Whisper 语音转文字模块
-        :param model_name: Whisper 模型名称（默认 'base'）
-        :param language: 语音语言（默认 'en'）
-        :param device: 运行设备（默认 'cpu'）
+        Whisper Speech-to-Text module with robust mel_filters.npz handling.
         """
-        # 获取程序运行的基路径，兼容 PyInstaller 打包环境
-        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-        local_model_path = os.path.join(base_path, "local_model", "whisper_model", f"{model_name}.pt")
-        tokenizer_dir = os.path.join(base_path, "local_model", "whisper_model")
+        # Check if running in PyInstaller environment
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            base_path = sys._MEIPASS  # PyInstaller temporary directory
+        else:
+            base_path = os.path.abspath(".")  # Current working directory for non-frozen
+
+        # Define paths
+        local_model_dir = os.path.join(base_path, "local_model", "whisper_model")
+        local_model_path = os.path.join(local_model_dir, f"{model_name}.pt")
+        mel_filters_source = os.path.join(local_model_dir, "mel_filters.npz")
+        mel_filters_target = os.path.join(os.path.dirname(whisper.__file__), "assets", "mel_filters.npz")
 
         print(f"Model path: {local_model_path}")
-        print(f"Tokenizer directory: {tokenizer_dir}")
+        print(f"Model directory: {local_model_dir}")
+        print(f"Mel filters source path: {mel_filters_source}")
+        print(f"Mel filters target path: {mel_filters_target}")
 
-        # 检查模型和分词器目录是否存在
+        # Ensure mel_filters.npz exists
+        if not os.path.exists(mel_filters_source):
+            print(f"{mel_filters_source} not found. Generating...")
+            self._generate_mel_filters(mel_filters_source)
+
+        # Copy mel_filters.npz to Whisper's assets directory
+        os.makedirs(os.path.dirname(mel_filters_target), exist_ok=True)
+        copyfile(mel_filters_source, mel_filters_target)
+        print(f"mel_filters.npz copied to {mel_filters_target}")
+
+        # Check model file existence
         if not os.path.exists(local_model_path):
             raise FileNotFoundError(f"Whisper model file not found at: {local_model_path}")
-        if not os.path.exists(tokenizer_dir):
-            raise FileNotFoundError(f"Tokenizer directory not found at: {tokenizer_dir}")
 
+        # Load Whisper model
         print(f"Loading Whisper model from: {local_model_path}")
-        print(f"Loading Tokenizer from: {tokenizer_dir}")
-
-        # 加载 Whisper 模型
-        print(f"Loading model {model_name} with whisper.load_model()...")
         self.model = whisper.load_model(local_model_path, device=device)
 
-        # 加载分词器（从目录加载）
-        self.tokenizer = WhisperTokenizer.from_pretrained(tokenizer_dir)
+        # Load tokenizer
+        try:
+            print(f"Loading Tokenizer from: {local_model_dir}")
+            self.tokenizer = WhisperTokenizer.from_pretrained(local_model_dir)
+        except Exception as e:
+            raise FileNotFoundError(f"Failed to load tokenizer from {local_model_dir}. Error: {e}")
 
         self.language = language
 
+    def _generate_mel_filters(self, output_path):
+        """
+        Generate mel_filters.npz dynamically.
+        """
+        print("Generating mel_filters.npz...")
+        import librosa
+        mel_80 = librosa.filters.mel(sr=16000, n_fft=400, n_mels=80)
+        mel_128 = librosa.filters.mel(sr=16000, n_fft=400, n_mels=128)
+        np.savez_compressed(output_path, mel_80=mel_80, mel_128=mel_128)
+        print(f"mel_filters.npz generated at {output_path}")
+
     def transcribe(self, audio_data, sample_rate=16000):
         """
-        使用 Whisper 模型将音频数据转录为文本
-        :param audio_data: 输入音频数据，numpy 数组格式
-        :param sample_rate: 音频采样率（默认 16000 Hz）
-        :return: 转录后的文本
+        Transcribe audio to text using Whisper model.
         """
-        # 转换音频数据为浮点数
         try:
             audio = audio_data.flatten().astype(np.float32)
         except Exception as e:
             print(f"Error flattening audio data: {e}")
             return ""
 
-        # 检查采样率是否符合 Whisper 要求
+        # Verify sample rate
         if sample_rate != 16000:
-            print(f"Warning: Expected sample rate of 16000 Hz, but got {sample_rate}. Resampling might be needed.")
+            print(f"Warning: Expected sample rate of 16000 Hz, got {sample_rate}. Resampling may be needed.")
 
-        # 使用 Whisper 模型进行转录
+        # Transcribe
         try:
             result = self.model.transcribe(audio, language=self.language)
             return result['text'].lower()

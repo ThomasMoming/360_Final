@@ -7,6 +7,9 @@ import platform
 import os
 # import whisper
 
+import librosa
+print(librosa.__version__)
+
 
 
 # import os

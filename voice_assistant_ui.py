@@ -8,8 +8,7 @@ from text_to_speech import TextToSpeech
 from io import StringIO
 
 
-sys.stdout = sys.__stdout__
-print("Standard output restored to console.")
+
 
 class VoiceAssistantUI:
     def __init__(self, master):
@@ -18,6 +17,9 @@ class VoiceAssistantUI:
         初始化界面组件
         :param master: 主窗口
         """
+        sys.stdout = sys.__stdout__
+        print("Standard output restored to console.")
+
         # # 保存原始 stdout
         # self.original_stdout = sys.stdout
         #
@@ -250,11 +252,16 @@ class VoiceAssistantUI:
     def start_assistant(self):
         self.update_status(False)
         self.assistant.is_running = True
+        sys.stdout = sys.__stdout__
+        print("Restored sys.stdout to default in run_assistant_thread.")
+
         self.assistant_thread = Thread(target=self.run_assistant_thread, daemon=True)
         self.assistant_thread.start()
 
     def run_assistant_thread(self):
         try:
+            sys.stdout = sys.__stdout__
+            print("Restored sys.stdout to default in run_assistant_thread.")
             self.assistant.start()
         except Exception as e:
             print(f"Error: {e}")

@@ -3,6 +3,9 @@ from voice_assistant_ui import VoiceAssistantUI
 import sys
 import time
 from threading import Thread
+import librosa
+import librosa.display
+
 
 
 if __name__ == "__main__":
