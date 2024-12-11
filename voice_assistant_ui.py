@@ -156,7 +156,7 @@ class VoiceAssistantUI:
             ("Activate", self.activate_mode),
             ("Silent", self.silent_mode),
             ("Exit", self.exit_program),
-            # ("Log", self.show_log_canvas),
+            ("Log", self.show_log_canvas),
         ]
 
         for i, (text, command) in enumerate(button_commands):
@@ -181,42 +181,42 @@ class VoiceAssistantUI:
                 button.place(x=control_canvas_x + 30, y=control_canvas_y + index * 30)
         self.button_visible = not self.button_visible
 
-    # def show_log_canvas(self):
-    #     """
-    #     显示或隐藏日志 Canvas
-    #     """
-    #     if self.log_canvas:  # 如果 log_canvas 已经存在
-    #         self.log_canvas.destroy()  # 销毁 Canvas（隐藏日志）
-    #         self.log_canvas = None  # 重置 log_canvas 为 None
-    #     else:
-    #         # 创建新的日志显示区域
-    #         self.log_canvas = Canvas(self.master, width=350, height=50, bg="black")
-    #         self.log_canvas.place(x=self.status_canvas.winfo_x() - 110, y=self.status_canvas.winfo_y() + 170)
-    #
-    #         # 更新日志内容
-    #         self.update_log()
-    #
-    # def update_log(self):
-    #     """
-    #     实时更新日志内容
-    #     """
-    #     if self.log_canvas:
-    #         # 获取完整的日志
-    #         logs = self.console_output.getvalue().split("\n")
-    #
-    #         # 显示最后的 3 行日志
-    #         self.log_canvas.delete("all")  # 清除旧内容
-    #         for i, log in enumerate(logs[-3:]):  # 保留最后 3 行
-    #             self.log_canvas.create_text(
-    #                 5, i * 18,  # 设置行间距
-    #                 anchor="nw",
-    #                 text=log,
-    #                 font=("Arial", 10, "bold"),
-    #                 fill="white"
-    #             )
-    #
-    #         # 每 500ms 更新一次
-    #         self.master.after(500, self.update_log)
+    def show_log_canvas(self):
+        """
+        显示或隐藏日志 Canvas
+        """
+        if self.log_canvas:  # 如果 log_canvas 已经存在
+            self.log_canvas.destroy()  # 销毁 Canvas（隐藏日志）
+            self.log_canvas = None  # 重置 log_canvas 为 None
+        else:
+            # 创建新的日志显示区域
+            self.log_canvas = Canvas(self.master, width=350, height=50, bg="black")
+            self.log_canvas.place(x=self.status_canvas.winfo_x() - 110, y=self.status_canvas.winfo_y() + 170)
+
+            # 更新日志内容
+            self.update_log()
+
+    def update_log(self):
+        """
+        实时更新日志内容
+        """
+        if self.log_canvas:
+            # 获取完整的日志
+            logs = self.console_output.getvalue().split("\n")
+
+            # 显示最后的 3 行日志
+            self.log_canvas.delete("all")  # 清除旧内容
+            for i, log in enumerate(logs[-3:]):  # 保留最后 3 行
+                self.log_canvas.create_text(
+                    5, i * 18,  # 设置行间距
+                    anchor="nw",
+                    text=log,
+                    font=("Arial", 10, "bold"),
+                    fill="white"
+                )
+
+            # 每 500ms 更新一次
+            self.master.after(500, self.update_log)
 
     def update_image(self, state="initial"):
         """
@@ -252,16 +252,16 @@ class VoiceAssistantUI:
     def start_assistant(self):
         self.update_status(False)
         self.assistant.is_running = True
-        sys.stdout = sys.__stdout__
-        print("Restored sys.stdout to default in run_assistant_thread.")
+        # sys.stdout = sys.__stdout__
+        # print("Restored sys.stdout to default in run_assistant_thread.")
 
         self.assistant_thread = Thread(target=self.run_assistant_thread, daemon=True)
         self.assistant_thread.start()
 
     def run_assistant_thread(self):
         try:
-            sys.stdout = sys.__stdout__
-            print("Restored sys.stdout to default in run_assistant_thread.")
+            # sys.stdout = sys.__stdout__
+            # print("Restored sys.stdout to default in run_assistant_thread.")
             self.assistant.start()
         except Exception as e:
             print(f"Error: {e}")

@@ -9,7 +9,7 @@ from transformers import WhisperTokenizer
 class SpeechToText:
     def __init__(self, model_name="base", language="en", device="cpu"):
         """
-        Whisper Speech-to-Text module with robust mel_filters.npz handling.
+        Whisper Speech-to-Text module with robust file handling.
         """
         # Check if running in PyInstaller environment
         if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -21,22 +21,39 @@ class SpeechToText:
         local_model_dir = os.path.join(base_path, "local_model", "whisper_model")
         local_model_path = os.path.join(local_model_dir, f"{model_name}.pt")
         mel_filters_source = os.path.join(local_model_dir, "mel_filters.npz")
-        mel_filters_target = os.path.join(os.path.dirname(whisper.__file__), "assets", "mel_filters.npz")
+        multilingual_tiktoken_source = os.path.join(local_model_dir, "multilingual.tiktoken")
+        gpt2_tiktoken_source = os.path.join(local_model_dir, "gpt2.tiktoken")
+
+        whisper_assets_dir = os.path.join(os.path.dirname(whisper.__file__), "assets")
+        mel_filters_target = os.path.join(whisper_assets_dir, "mel_filters.npz")
+        multilingual_tiktoken_target = os.path.join(whisper_assets_dir, "multilingual.tiktoken")
+        gpt2_tiktoken_target = os.path.join(whisper_assets_dir, "gpt2.tiktoken")
 
         print(f"Model path: {local_model_path}")
         print(f"Model directory: {local_model_dir}")
         print(f"Mel filters source path: {mel_filters_source}")
         print(f"Mel filters target path: {mel_filters_target}")
+        print(f"Multilingual tiktoken source path: {multilingual_tiktoken_source}")
+        print(f"Multilingual tiktoken target path: {multilingual_tiktoken_target}")
+        print(f"GPT-2 tiktoken source path: {gpt2_tiktoken_source}")
+        print(f"GPT-2 tiktoken target path: {gpt2_tiktoken_target}")
 
         # Ensure mel_filters.npz exists
         if not os.path.exists(mel_filters_source):
             print(f"{mel_filters_source} not found. Generating...")
             self._generate_mel_filters(mel_filters_source)
 
-        # Copy mel_filters.npz to Whisper's assets directory
-        os.makedirs(os.path.dirname(mel_filters_target), exist_ok=True)
-        copyfile(mel_filters_source, mel_filters_target)
-        print(f"mel_filters.npz copied to {mel_filters_target}")
+        # Ensure multilingual.tiktoken and gpt2.tiktoken exist
+        for file_name, source_path, target_path in [
+            ("mel_filters.npz", mel_filters_source, mel_filters_target),
+            ("multilingual.tiktoken", multilingual_tiktoken_source, multilingual_tiktoken_target),
+            ("gpt2.tiktoken", gpt2_tiktoken_source, gpt2_tiktoken_target)
+        ]:
+            if not os.path.exists(source_path):
+                raise FileNotFoundError(f"{file_name} not found at {source_path}.")
+            os.makedirs(os.path.dirname(target_path), exist_ok=True)
+            copyfile(source_path, target_path)
+            print(f"{file_name} copied to {target_path}")
 
         # Check model file existence
         if not os.path.exists(local_model_path):

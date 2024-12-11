@@ -205,7 +205,7 @@ class VoiceAssistant:
                     self.tts.speak("Unable open.")
                     print(f"Error open: {e}")
 
-            elif intent == "close web":
+            elif intent == "close website":
                 try:
                     # 模拟快捷键 Ctrl + W 关闭当前网页标签
                     pyautogui.hotkey("ctrl", "w")
@@ -267,9 +267,9 @@ class VoiceAssistant:
             elif intent == "email":
                 try:
                     #链接
-                    canvas_url = "https://outlook.office365.com/mail/"
+                    email_url = "https://outlook.office365.com/mail/"
                     # webbrowser打开链接
-                    webbrowser.open(canvas_url)
+                    webbrowser.open(email_url)
                     self.tts.speak("Confirm.")
                 except Exception as e:
                     self.tts.speak("Error open.")

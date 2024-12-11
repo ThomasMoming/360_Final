@@ -41,9 +41,10 @@ class NaturalLanguageUnderstanding:
             "GoSFU",
             "Task Manager",
             "screenshot",
-            "close web",
+            "close website",
             "play music",
-             "emil",
+             "email",
+            "None",
         ]
 
         # 检查候选标签是否为空
